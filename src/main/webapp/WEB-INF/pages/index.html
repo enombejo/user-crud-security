@@ -1,0 +1,68 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+    <head>
+        <meta content="text/html; charset=UTF-8">
+        <title></title>
+    </head>
+    <body>
+
+
+        <div>
+            <h>Добавление пользователя</h>
+            <form method="post">
+                <p>First name: <input name="firstName" charset="UTF-8"> <p3 th:text="${firstName}"></p3></p>
+                <p>Last name: <input name="lastName" charset="UTF-8"> <p3 th:text="${lastName}"></p3></p>
+                <p>Email: <input name="email" charset="UTF-8"> <p3 th:text="${email}"></p3></p>
+                <button type="submit" name="add">Add user</button>
+            </form>
+
+            <th:block th:each="msg : ${message}">
+                <p th:text="${msg}"></p>
+            </th:block>
+
+            <h>Изменение пользователя</h>
+            <form th:action = "@{/update}" method="post" >
+                <p>ID: <input name="id"> <p3 th:text="${id1}"></p3></p>
+                <p>First name: <input name="firstName"> <p3 th:text="${firstName1}"></p3></p>
+                <p>Last name: <input name="lastName"> <p3 th:text="${lastName1}"></p3></p>
+                <p>Email: <input name="email"> <p3 th:text="${email1}"></p3></p>
+                <button type="submit" name="update">Update user</button>
+            </form>
+
+            <th:block th:each="msg : ${message1}">
+                <p th:text="${msg}"></p>
+            </th:block>
+
+            <h>Удаление пользователя</h>
+            <form th:action="@{/delete}" method="post">
+                <p>ID: <input name="id"> <p3 th:text="${id2}"></p3></p>
+                <button type="submit" name="delete">Delete user</button>
+            </form>
+
+            <th:block th:each="msg : ${message2}">
+                <p th:text="${msg}"></p>
+            </th:block>
+
+        </div>
+
+            <a href="/">Show all users</a>
+            <table style="width:300px" border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>emile</th>
+                </tr>
+                <th:block th:each="user : ${users}">
+                    <tr>
+                        <td th:text="${user.getId()}"></td>
+                        <td th:text="${user.getFirstName()}"></td>
+                        <td th:text="${user.getLastName()}"></td>
+                        <td th:text="${user.getEmail()}"></td>
+                    </tr>
+                </th:block>
+            </table>
+
+    </body>
+</html>
