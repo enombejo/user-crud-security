@@ -1,15 +1,9 @@
 package org.example.config;
 
-import org.springframework.core.env.Environment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,8 +11,6 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
-import javax.sql.DataSource;
-import java.util.Properties;
 
 @Configuration
 @EnableWebMvc
@@ -41,16 +33,6 @@ public class WebAppConfig implements WebMvcConfigurer {
         return templateResolver;
     }
 
-//    @Bean
-//    public FilterRegistrationBean encodingFilter() {
-//        CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter("UTF-8");
-//        encodingFilter.setForceEncoding(true);
-//        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-//        registrationBean.setFilter(encodingFilter);
-//        registrationBean.addUrlPatterns("/*");
-//        return registrationBean;
-//        //return encodingFilter;
-//    }
 
     @Bean
     public SpringTemplateEngine templateEngine() {

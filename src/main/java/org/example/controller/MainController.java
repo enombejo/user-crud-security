@@ -1,78 +1,52 @@
 package org.example.controller;
 
+import org.example.model.Role;
 import org.example.model.User;
 import org.example.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Controller
-
+@RequestMapping("/")
 public class MainController {
 
     @Autowired
     UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("hello")
+    public String printWelcome(ModelMap model) {
+        List<String> messages = new ArrayList<>();
+        messages.add("Hello!");
+        messages.add("I'm Spring MVC-SECURITY application");
+        messages.add("5.2.0 version by sep'19 ");
+        model.addAttribute("messages", messages);
+        return "hello";
+    }
+
+    @GetMapping("login")
+    public String loginPage() {
+
+        return "login";
+    }
+
+
+    @GetMapping("admin")
     public String getPage(ModelMap model) {
         model.addAttribute("users", userService.listUser());
         return "index";
     }
 
-
-
-
-    @PostMapping(value = "/")
-    public String addUser(Model model,
-                          @RequestParam(name = "firstName", required = false) String firstName,
-                          @RequestParam(name = "lastName", required = false) String lastName,
-                          @RequestParam(name = "email", required = false) String email) {
-        String str = firstName + " " + lastName + " " + email;
-        System.out.println(str);
-
-        if ((firstName == null || firstName == "") && (lastName == null || lastName == "") && (email == null || email == "")) {
-            if (firstName == null || firstName == "") model.addAttribute("firstName", "строка first name пуста");
-            if (lastName == null || lastName == "") model.addAttribute("lastName", "строка last name пуста");
-            if (email == null || email == "") model.addAttribute("email", "строка email пуста");
-            model.addAttribute("users", userService.listUser());
-            return "index";
-        }
-        userService.saveUser(new User(firstName, lastName, email));
-        model.addAttribute("message", "Добвлен пользователь: " + str);
-        model.addAttribute("users", userService.listUser());
-        return "index";
-    }
-
-    @PostMapping("update")
-    public String updateUser(Model model,
-                             @RequestParam(name = "id", required = false) long id,
-                             @RequestParam(name = "firstName", required = false) String firstName,
-                             @RequestParam(name = "lastName", required = false) String lastName,
-                             @RequestParam(name = "email", required = false) String email) {
-
-        if ((firstName == null || firstName == "") && (lastName == null || lastName == "") && (email == null || email == "") && (id == 0)) {
-            if (id == 0) model.addAttribute("id1", "строка id пуста");
-            if (firstName == null || firstName == "") model.addAttribute("firstName1", "строка first name пуста");
-            if (lastName == null || lastName == "") model.addAttribute("lastName1", "строка last name пуста");
-            if (email == null || email == "") model.addAttribute("email1", "строка email пуста");
-            model.addAttribute("users", userService.listUser());
-            return "index";
-        }
-
-        User user = new User(firstName, lastName, email);
-        user.setId(id);
-        userService.updateUser(user);
-        model.addAttribute("users", userService.listUser());
-        return "index";
-    }
-
-
-    @PostMapping("delete")
-    public String deleteUser(Model model, @RequestParam(name = "id") long id) {
+    @PostMapping("admin/delete")
+    public String deleteUser(ModelMap model, @RequestParam(name = "userId") long id) {
+        System.out.println(id);
         if (id == 0) {
             model.addAttribute("id2", "строка id пуста");
             model.addAttribute("users", userService.listUser());
@@ -82,6 +56,56 @@ public class MainController {
         model.addAttribute("users", userService.listUser());
         return "index";
     }
+
+    @PostMapping("admin/add")
+    public String addUser(ModelMap model,
+                          @RequestParam(name = "name") String name,
+                          @RequestParam(name = "password") String password,
+                          @RequestParam(name = "lastName") String lastName,
+                          @RequestParam(name = "firstName") String firstName,
+                          @RequestParam(name = "ago") Integer ago,
+                          @RequestParam(name = "roles") Set<String> roles/**/) {
+        User user = new User(name, password, firstName, lastName, ago);
+        Set<Role> roles1 = new HashSet<>();
+        roles.forEach(n -> roles1.add(new Role(n, user)));
+        user.setRoles(roles1);
+        user.getRoles().forEach(n -> System.out.println(n.getRole()));
+        userService.saveUser(user);
+        model.addAttribute("users", userService.listUser());
+        return "index";
+    }
+
+    @PostMapping("admin/update")
+    public String updateUser(ModelMap model,
+                             @RequestParam(name = "id") long id,
+                             @RequestParam(name = "name") String name,
+                             @RequestParam(name = "password") String password,
+                             @RequestParam(name = "lastName") String lastName,
+                             @RequestParam(name = "firstName") String firstName,
+                             @RequestParam(name = "ago") Integer ago,
+                             @RequestParam(name = "roles", required = false) Set<String> roles/**/) {
+        User user = new User(name, password, firstName, lastName, ago);
+        user.setId(id);
+        Set<Role> setRoles = new HashSet<>();
+        if ((roles != null)) {
+            roles.forEach(n -> setRoles.add(new Role(n, user)));
+        } else {
+            //setRoles.add(new Role("ROLE_USER", user));
+        }
+
+        user.setRoles(setRoles);
+        userService.updateUser(user);
+        model.addAttribute("users", userService.listUser());
+        return "index";
+    }
+
+    @GetMapping("user")
+    public String getUser(ModelMap model, Principal userS) {
+        User user = userService.getUserByName(userS.getName());
+        model.addAttribute("messages", user.toString());
+        return "user";
+    }
+
 }
 
 

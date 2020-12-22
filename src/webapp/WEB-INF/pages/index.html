@@ -1,0 +1,122 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+    <head>
+        <meta content="text/html; charset=UTF-8">
+        <title></title>
+    </head>
+    <body>
+
+
+        <th:block>
+            <a href="/logout">Logout</a>
+        </th:block>
+        <div>
+            <h>Добавление пользователя</h>
+            <form action="/admin/add" method="post">
+                <p>Name: <input name="name" charset="UTF-8"> <p3 th:text="${name}"></p3></p>
+                <p>Password: <input name="password"> <p3 th:text="${password}"></p3></p>
+                <p>Last name: <input name="lastName"> <p3 th:text="${lastName}"></p3></p>
+                <p>First name: <input name="firstName" > <p3 th:text="${lastName}"></p3></p>
+                <p>Ago: <input type="number" name="ago" > <p3 th:text="${ago}"></p3></p>
+                <p>Roles:
+                    <p>Admin <input type="checkbox" name="roles" value="ROLE_ADMIN"></p>
+                    <p>User <input type="checkbox" name="roles" value="ROLE_USER"></p>
+                </p>
+                <button type="submit" name="add">Add user</button>
+            </form>
+
+            <th:block th:each="msg : ${message}">
+                <p th:text="${msg}"></p>
+            </th:block>
+
+<!--            <h>Изменение пользователя</h>-->
+<!--            <form th:action = "@{/admin/update}" method="post" accept-charset="UTF-8">-->
+<!--                <p>ID: <input type="number" name="id" > <p3 th:text="${id1}"></p3></p>-->
+<!--                <p>Name: <input name="name"> <p3 th:text="${name1}"></p3></p>-->
+<!--                <p>Password: <input name="password"> <p3 th:text="${password1}"></p3></p>-->
+<!--                <p>Last name: <input name="lastName"> <p3 th:text="${lastName1}"></p3></p>-->
+<!--                <p>First name: <input name="firstName" > <p3 th:text="${lastName1}"></p3></p>-->
+<!--                <p>Ago: <input type="number" name="ago" > <p3 th:text="${ago1}"></p3></p>-->
+<!--                <p>Roles:-->
+<!--                    <p>Admin <input type="checkbox" name="roles" value="ROLE_ADMIN"></p>-->
+<!--                    <p>User <input type="checkbox" name="roles" value="ROLE_USER"></p>-->
+<!--                </p>-->
+<!--                <button type="submit" name="update">Update user</button>-->
+<!--            </form>-->
+
+<!--            <th:block th:each="msg : ${message1}">-->
+<!--                <p th:text="${msg}"></p>-->
+<!--            </th:block>-->
+
+<!--            <h>Удаление пользователя</h>-->
+<!--            <form th:action="@{/delete}" method="post">-->
+<!--                <p>ID: <input name="id"> <p3 th:text="${id2}"></p3></p>-->
+<!--                <button type="submit" name="delete">Delete user</button>-->
+<!--            </form>-->
+
+<!--            <th:block th:each="msg : ${message2}">-->
+<!--                <p th:text="${msg}"></p>-->
+<!--            </th:block>-->
+
+        </div>
+
+            <a href="/admin">Show all users</a>
+            <table style="width:300px" border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Password</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Ago</th>
+                    <th>Roles</th>
+                    <th>Delete</th>
+
+
+                    <th>Name</th>
+                    <th>Password</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Ago</th>
+                    <th>Roles</th>
+                    <th>Admin</th>
+                    <th>User</th>
+                    <th>Update user</th>
+                </tr>
+                <th:block th:each="user : ${users}">
+                    <tr>
+                        <td th:text="${user.getId()}"></td>
+                        <td th:text="${user.getName()}"></td>
+                        <td th:text="${user.getPassword()}"></td>
+                        <td th:text="${user.getFirstName()}"></td>
+                        <td th:text="${user.getLastName()}"></td>
+                        <td th:text="${user.getAgo()}"></td>
+                        <td th:text="${user.getRoles()}"></td>
+                        <td>
+                            <form action="/admin/delete" method="post">
+                                <input type="hidden" name="userId" th:value="${user.getId()}"/>
+                                <input type="hidden" name="action" value="delete"/>
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+
+                        <form th:action = "@{/admin/update}" method="post" accept-charset="UTF-8">
+                            <input type="hidden" name="id" th:value="${user.getId()}">
+                            <td>Name: <input name="name" th:value="${user.getName()}"><p3 th:text="${name1}"></p3></td>
+                            <td>Password: <input name="password" th:value="${user.getPassword()}"> <p3 th:text="${password1}"></p3></td>
+                            <td>First name: <input name="firstName" th:value="${user.getFirstName()}"> <p3 th:text="${lastName1}"></p3></td>
+                            <td>Last name: <input name="lastName" th:value="${user.getLastName()}"> <p3 th:text="${lastName1}"></p3></td>
+                            <td>Ago: <input type="number" name="ago" th:value="${user.getAgo()}"> <p3 th:text="${ago1}"></p3></td>
+                            <td>Roles:
+                            <td>Admin <input type="checkbox" name="roles" value="ROLE_ADMIN"></td>
+                            <td>User <input type="checkbox" name="roles" checked value="ROLE_USER"></td>
+
+                            <td><button type="submit" name="update">Update user</button></td>
+                        </form>
+                    </tr>
+                </th:block>
+            </table>
+
+    </body>
+</html>

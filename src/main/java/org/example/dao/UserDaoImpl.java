@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import java.util.List;
+
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -15,13 +15,14 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
+
     @Override
     public void add(User user) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         em.persist(user);
+        user.getRoles().forEach(n -> em.persist(n));
         em.getTransaction().commit();
-        //em.close();
     }
 
     @Override
@@ -33,12 +34,9 @@ public class UserDaoImpl implements UserDao {
     public void updateUser(User user) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
-        em.createQuery("update User set firstName = :firstName, lastName = :lastName, email = :email where id = :id")
-                .setParameter("id", user.getId())
-                .setParameter("firstName", user.getFirstName())
-                .setParameter("lastName", user.getLastName())
-                .setParameter("email", user.getEmail())
-                .executeUpdate();
+        User userBD =  em.find(User.class, user.getId());
+        userBD.getRoles().forEach(role -> em.remove(role));
+        em.merge(user);
         em.getTransaction().commit();
     }
 
@@ -46,8 +44,18 @@ public class UserDaoImpl implements UserDao {
     public void deleteUser(long id) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
-        User user = em.find(User.class, new Long(id));
+        User user = em.find(User.class, id);
         em.remove(user);
         em.getTransaction().commit();
     }
+
+    @Override
+    public User getUserByName(String name) {
+        User user = (User) entityManagerFactory.createEntityManager()
+                .createQuery("FROM User WHERE name = :name")
+                .setParameter("name", name)
+                .getSingleResult();
+        return user;
+    }
+
 }

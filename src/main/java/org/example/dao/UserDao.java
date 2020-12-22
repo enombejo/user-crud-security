@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import org.example.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ public interface UserDao {
     List<User> listUsers();
     void updateUser(User user);
     void deleteUser(long id);
-
+    User getUserByName(String name);
 }
